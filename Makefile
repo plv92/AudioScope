@@ -43,6 +43,9 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f coverage.html
+	rm -f tests/*.gc*
+	rm -f src/*.gc*
 
 re: fclean all
 
