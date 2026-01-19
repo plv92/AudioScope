@@ -1,0 +1,36 @@
+name: C CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential criterion-dev gcovr
+
+      - name: Build
+        run: make
+
+      - name: Run unit tests
+        run: make tests
+
+      - name: Run coverage
+        run: |
+          make coverage
+          gcovr --root . --exclude-directories tests --xml -o coverage.xml
+          gcovr --root . --exclude-directories tests --html -o coverage.html
+        continue-on-error: true
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage.html

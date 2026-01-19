@@ -7,23 +7,24 @@
 
 #ifndef WAV_H
     #define WAV_H
-
     #include <stdint.h>
 
+typedef enum {
+    WAV_OK = 0,
+    WAV_ERR_FILE = 1,
+    WAV_ERR_FORMAT = 2,
+    WAV_ERR_UNSUPPORTED = 3,
+    WAV_ERR_IO = 4
+} wav_error_t;
+
 typedef struct wav_header_s {
-    char     riff[4];
-    uint32_t overall_size;
-    char     wave[4];
-    char     fmt_chunk_marker[4];
-    uint32_t length_of_fmt;
-    uint16_t format_type;
-    uint16_t channels;
+    uint16_t audio_format;
+    uint16_t num_channels;
     uint32_t sample_rate;
-    uint32_t byterate;
-    uint16_t block_align;
     uint16_t bits_per_sample;
+    uint32_t data_size;
 } wav_header_t;
 
-int read_wav_header(const char *path, wav_header_t *header);
+wav_error_t wav_parse_header(const char *filename, wav_header_t *header);
 
 #endif
